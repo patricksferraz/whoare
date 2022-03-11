@@ -5,8 +5,21 @@
 *.so
 *.dylib
 
+# Log files
+*.log
+
+# Directories
+tmp/
+
+# environment
+*.env
+
+# database
+*.db
+
 # Test binary, built with `go test -c`
 *.test
+!Dockerfile.test
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out

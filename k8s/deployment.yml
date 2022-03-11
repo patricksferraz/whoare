@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whoare-v1
+  labels:
+    app: whoare
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: whoare
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: whoare
+        version: v1
+    spec:
+      containers:
+      - name: whoare
+        image: ghcr.io/patricksferraz/whoare
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+        envFrom:
+          - secretRef:
+              name: whoare-secret
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "50m"
+
+      imagePullSecrets:
+          - name: regsecret
