@@ -58,6 +58,7 @@ func (r *Repository) FindEmployeesByName(ctx context.Context, filter *entity.Fil
 	return e, &count, nil
 }
 
+// BUG: this method is not working
 func (r *Repository) FindEmployeesBySkill(ctx context.Context, filter *entity.FilterEmployee) ([]*entity.Employee, *int64, error) {
 	var e []*entity.Employee
 
