@@ -40,41 +40,15 @@ func (r *Repository) SaveEmployee(ctx context.Context, employee *entity.Employee
 	return err
 }
 
-func (r *Repository) FindEmployeesByName(ctx context.Context, filter *entity.FilterEmployee) ([]*entity.Employee, *int64, error) {
+func (r *Repository) SearchEmployees(ctx context.Context, query *string) ([]*entity.Employee, error) {
 	var e []*entity.Employee
 
-	q := r.Orm.Db.
-		Where("name LIKE ?", "%"+filter.Q+"%")
-	count := q.Find(&e).RowsAffected
-
-	q = q.Order("name " + filter.SortBy).
-		Limit(filter.PageSize).
-		Offset(filter.PageSize * (filter.Page - 1))
-	err := q.Find(&e).Error
+	err := r.Orm.Db.Where("name LIKE ?", "%"+*query+"%").Find(&e).Error
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	return e, &count, nil
-}
-
-// BUG: this method is not working
-func (r *Repository) FindEmployeesBySkill(ctx context.Context, filter *entity.FilterEmployee) ([]*entity.Employee, *int64, error) {
-	var e []*entity.Employee
-
-	q := r.Orm.Db.
-		Preload("Skills", "name = ?", "%"+filter.Q+"%")
-	count := q.Find(&e).RowsAffected
-
-	q = q.Order("name " + filter.SortBy).
-		Limit(filter.PageSize).
-		Offset(filter.PageSize * (filter.Page - 1))
-	err := q.Find(&e).Error
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return e, &count, nil
+	return e, nil
 }
 
 func (r *Repository) CreateSkill(ctx context.Context, skill *entity.Skill) error {

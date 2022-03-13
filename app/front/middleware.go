@@ -1,4 +1,4 @@
-package app
+package front
 
 import (
 	"time"
@@ -11,6 +11,12 @@ import (
 
 type Middleware struct {
 	Session *session.Store
+}
+
+func NewMiddleware(session *session.Store) *Middleware {
+	return &Middleware{
+		Session: session,
+	}
 }
 
 func (m *Middleware) CsrfProtection() func(*fiber.Ctx) error {
@@ -27,16 +33,31 @@ func (m *Middleware) CsrfProtection() func(*fiber.Ctx) error {
 	})
 }
 
-// func (m *Middleware) requireLogin(c *fiber.Ctx) error {
+func (m *Middleware) RequireLogin(c *fiber.Ctx) error {
+	// currSession, err := m.Session.Get(c)
+	// if err != nil {
+	// 	return err
+	// }
+	// user := currSession.Get("User")
+	// defer currSession.Save()
+
+	// if user == nil {
+	// 	return c.Redirect("/login")
+	// }
+
+	return c.Next()
+}
+
+// func (m *Middleware) InitSession(c *fiber.Ctx) error {
 // 	currSession, err := m.Session.Get(c)
 // 	if err != nil {
 // 		return err
 // 	}
-// 	user := currSession.Get("User")
-// 	defer currSession.Save()
 
-// 	if user == nil {
-// 		return c.Redirect("/login")
+// 	r := currSession.Get("data")
+// 	if r == nil {
+// 		currSession.Set("data", Session{})
+// 		currSession.Save()
 // 	}
 
 // 	return c.Next()

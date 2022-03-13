@@ -1,0 +1,44 @@
+{{template "partials/header" .}}
+
+<div class="container">
+    <div class="row">
+        <div style="margin-top: 25%">
+            <form action="" method="get" autocomplete="on" accept-charset="utf-8">
+                <div class="row">
+                    <div class="nine columns">
+                        <input class="u-full-width" type="text" placeholder="Search anything..." name="q" id="q" value="{{.Q}}">
+                    </div>
+                    <div class="three columns">
+                        <input class="u-full-width" type="submit" value="search">
+                    </div>
+                </div>
+                <!-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <g class="search-path" fill="none">
+                        <path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4" />
+                        <circle cx="8" cy="8" r="7" />
+                    </g>
+                </svg> -->
+            </form>
+            <table class="u-full-width">
+                <tbody>
+                    {{range .Employees}}
+                        <tr>
+                            <td><a href="/profile/{{.ID}}">{{.Name}}</a><br>{{.Position}}, <span id="{{.ID}}_time"></span></td>
+                            <td><a href="mailto:{{.Email}}">{{.Email}}</a></td>
+                        </tr>
+                        <script>
+                            today = new Date();
+                            hireDate = new Date({{.HireDate}});
+                            _y = today.getFullYear() - hireDate.getFullYear();
+                            _m = (_y * 12) + (today.getMonth() - hireDate.getMonth());
+                            document.getElementById('{{.ID}}_time').innerHTML = Math.floor(_m/12)+'y' + (_m%12)+'m';
+                        </script>
+                    {{end}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{{template "partials/footer" .}}

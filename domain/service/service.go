@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"time"
 
 	"github.com/patricksferraz/whoare/domain/entity"
 	"github.com/patricksferraz/whoare/domain/repo"
@@ -17,8 +18,8 @@ func NewService(repo repo.RepoInterface) *Service {
 	}
 }
 
-func (s *Service) CreateEmployee(ctx context.Context, name, position, email, password string) (*string, error) {
-	e, err := entity.NewEmployee(name, position, email, password)
+func (s *Service) CreateEmployee(ctx context.Context, name, position, email, password, presentation string, hireDate time.Time) (*string, error) {
+	e, err := entity.NewEmployee(name, position, email, password, presentation, hireDate)
 	if err != nil {
 		return nil, err
 	}
@@ -39,22 +40,13 @@ func (s *Service) FindEmployee(ctx context.Context, employeeID *string) (*entity
 	return e, nil
 }
 
-func (s *Service) FindEmployeesByName(ctx context.Context, filter *entity.FilterEmployee) ([]*entity.Employee, *int64, error) {
-	e, count, err := s.Repo.FindEmployeesByName(ctx, filter)
+func (s *Service) SearchEmployees(ctx context.Context, query *string) ([]*entity.Employee, error) {
+	e, err := s.Repo.SearchEmployees(ctx, query)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	return e, count, nil
-}
-
-func (s *Service) FindEmployeesBySkill(ctx context.Context, filter *entity.FilterEmployee) ([]*entity.Employee, *int64, error) {
-	e, count, err := s.Repo.FindEmployeesBySkill(ctx, filter)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return e, count, nil
+	return e, nil
 }
 
 func (s *Service) CreateSkill(ctx context.Context, name string) (*string, error) {
