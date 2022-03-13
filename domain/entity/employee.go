@@ -48,3 +48,38 @@ func (e *Employee) isValid() error {
 	_, err := govalidator.ValidateStruct(e)
 	return err
 }
+
+func (e *Employee) SetName(name string) error {
+	e.Name = name
+	e.UpdatedAt = time.Now()
+	err := e.isValid()
+	return err
+}
+
+func (e *Employee) SetEmail(email string) error {
+	e.Email = email
+	e.UpdatedAt = time.Now()
+	err := e.isValid()
+	return err
+}
+
+func (e *Employee) SetPosition(position string) error {
+	e.Position = position
+	e.UpdatedAt = time.Now()
+	err := e.isValid()
+	return err
+}
+
+func (e *Employee) SetPresentation(presentation string) error {
+	e.Presentation = presentation
+	e.UpdatedAt = time.Now()
+	err := e.isValid()
+	return err
+}
+
+func (e *Employee) SetHireDate(hireDate time.Time) error {
+	e.HireDate = hireDate
+	e.UpdatedAt = time.Now()
+	err := e.isValid()
+	return err
+}

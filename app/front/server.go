@@ -36,8 +36,9 @@ func StartFront(orm *db.DbOrm) {
 	app.Get("/", front.Index)
 	app.Get("/register", front.Register)
 	app.Post("/register", front.Register)
-	// app.Get("/profile/:employee_id", middleware.RequireLogin, middleware.CsrfProtection(), appService.Profile)
-	// app.Get("/employees", appService.CreateEmployee)
+	app.Get("/profile/:employee_id", front.Profile)
+	app.Get("/profile/:employee_id/edit", front.ProfileEdit)
+	app.Post("/profile/:employee_id/edit", front.ProfileEdit)
 
 	app.Use(func(c *fiber.Ctx) error {
 		return c.Render("errors/404", fiber.Map{"Status": 404, "Error": "Not Found"}) // => 404 "Not Found"
