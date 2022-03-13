@@ -7,28 +7,32 @@
                 <div class="row">
                     <label for="email">Your email</label>
                     <input class="u-full-width" type="email" placeholder="Your email" name="email" id="email"
-                        value="{{.R.Email}}" required>
+                        value="{{.Employee.Email}}" required>
                 </div>
                 <div class="row">
                     <label for="name">Your name</label>
                     <input class="u-full-width" type="text" placeholder="Your name" name="name" id="name"
-                        value="{{.R.Name}}" required>
+                        value="{{.Employee.Name}}" required>
                 </div>
                 <div class="row">
                     <div class="six columns">
                         <label for="position">Your position</label>
                         <input class="u-full-width" type="text" placeholder="Your position" name="position" id="position"
-                            value="{{.R.Position}}" required>
+                            value="{{.Employee.Position}}" required>
                     </div>
                     <div class="six columns">
                         <label for="hire_date">Hire date</label>
-                        <input class="u-full-width" type="date" name="hire_date" id="hire_date" value="{{.R.HireDate}}" required>
+                        <input class="u-full-width" type="date" name="hire_date" id="hire_date" value="" required>
                     </div>
+                    <script>
+                        hireDate = new Date({{.Employee.HireDate}});
+                        document.getElementById('hire_date').value = hireDate.toISOString().slice(0, 10)
+                    </script>
                 </div>
                 <div class="row">
                     <label for="presentation">Introduce yourself</label>
                     <textarea class="u-full-width" placeholder="Is …" name="presentation" id="presentation"
-                        value="{{.R.Presentation}}" maxlength="500" onkeyup="CountWords(this)" required></textarea>
+                        maxlength="500" onkeyup="CountWords(this)" required>{{.Employee.Presentation}}</textarea>
                     <span class="u-pull-right" style="margin-top: -20px;"><span id="words">500</span> characters left.</span>
                 </div>
                 <div class="row">

@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/patricksferraz/whoare/domain/entity"
 	"github.com/patricksferraz/whoare/domain/repo"
+	"github.com/patricksferraz/whoare/utils"
 )
 
 type Service struct {
@@ -69,4 +71,41 @@ func (s *Service) FindSkill(ctx context.Context, skillID *string) (*entity.Skill
 	}
 
 	return e, nil
+}
+
+func (s *Service) UpdateEmployee(ctx context.Context, employeeID, name, position, email, password, presentation string, hireDate time.Time) error {
+	e, err := s.Repo.FindEmployee(ctx, &employeeID)
+	if err != nil {
+		return err
+	}
+
+	if err = e.SetName(name); err != nil {
+		return err
+	}
+
+	if err = e.SetEmail(email); err != nil {
+		return err
+	}
+
+	if err = e.SetPosition(position); err != nil {
+		return err
+	}
+
+	if err = e.SetPresentation(presentation); err != nil {
+		return err
+	}
+
+	if err = e.SetHireDate(hireDate); err != nil {
+		return err
+	}
+
+	if err = utils.CompareHashAndPassword(e.Password, password); err != nil {
+		return errors.New("invalid password")
+	}
+
+	if err = s.Repo.SaveEmployee(ctx, e); err != nil {
+		return err
+	}
+
+	return nil
 }
