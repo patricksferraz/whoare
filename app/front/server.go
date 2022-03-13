@@ -40,7 +40,7 @@ func StartFront(orm *db.DbOrm) {
 	// app.Get("/employees", appService.CreateEmployee)
 
 	app.Use(func(c *fiber.Ctx) error {
-		return c.SendStatus(404) // => 404 "Not Found"
+		return c.Render("errors/404", fiber.Map{"Status": 404, "Error": "Not Found"}) // => 404 "Not Found"
 	})
 
 	err := app.Listen("0.0.0.0:8080")
