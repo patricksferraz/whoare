@@ -8,7 +8,7 @@ import (
 
 	"github.com/Netflix/go-env"
 	"github.com/joho/godotenv"
-	rest "github.com/patricksferraz/whoare/app"
+	rest "github.com/patricksferraz/whoare/app/front"
 	"github.com/patricksferraz/whoare/config"
 	"github.com/patricksferraz/whoare/infra/db"
 )
@@ -47,5 +47,5 @@ func main() {
 	}
 	defer orm.Db.Close()
 
-	rest.StartApp(orm)
+	rest.StartFront(orm)
 }

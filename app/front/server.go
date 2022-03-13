@@ -1,4 +1,4 @@
-package app
+package front
 
 import (
 	"log"
@@ -15,25 +15,29 @@ import (
 var sessionStore = session.New()
 
 func init() {
-	sessionStore.RegisterType(fiber.Map{})
+	sessionStore.RegisterType(Session{})
 }
 
-func StartApp(orm *db.DbOrm) {
-	engine := html.New("./app/views", ".html")
+func StartFront(orm *db.DbOrm) {
+	engine := html.New("./app/front/views", ".html")
 
 	app := fiber.New(fiber.Config{
 		Views:       engine,
 		ViewsLayout: "layouts/main",
 	})
 	app.Use(recover.New())
-	app.Static("/static", "./public")
+	app.Static("/static", "./app/front/public")
 
 	repository := repo.NewRepository(orm)
 	service := service.NewService(repository)
-	appService := NewAppService(service, sessionStore)
+	front := NewFront(service, sessionStore)
+	// middleware := NewMiddleware(sessionStore)
 
-	app.Get("/", appService.Index)
-	app.Get("/employees", appService.CreateEmployee)
+	app.Get("/", front.Index)
+	app.Get("/register", front.Register)
+	app.Post("/register", front.Register)
+	// app.Get("/profile/:employee_id", middleware.RequireLogin, middleware.CsrfProtection(), appService.Profile)
+	// app.Get("/employees", appService.CreateEmployee)
 
 	app.Use(func(c *fiber.Ctx) error {
 		return c.SendStatus(404) // => 404 "Not Found"

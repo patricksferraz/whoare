@@ -11,8 +11,9 @@
 # Directories
 tmp/
 
-# environment
-*.env
+# ocults
+.*
+!.env.example
 
 # database
 *.db
