@@ -12,6 +12,10 @@ type RegisterRequest struct {
 	Password     string `json:"password" xml:"password" form:"password"`
 }
 
+type DeleteRequest struct {
+	Password string `json:"password" xml:"password" form:"password"`
+}
+
 type SearchRequest struct {
 	Q string `query:"q"`
 }

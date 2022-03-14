@@ -25,8 +25,10 @@
                         <input class="u-full-width" type="date" name="hire_date" id="hire_date" value="" required>
                     </div>
                     <script>
-                        hireDate = new Date({{.Employee.HireDate}});
-                        document.getElementById('hire_date').value = hireDate.toISOString().slice(0, 10)
+                        {{if .Employee.HireDate}}
+                            hireDate = new Date({{.Employee.HireDate}});
+                            document.getElementById('hire_date').value = hireDate.toISOString().slice(0, 10)
+                        {{end}}
                     </script>
                 </div>
                 <div class="row">

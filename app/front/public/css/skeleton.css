@@ -555,3 +555,40 @@ there.
 
 /* Owner
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.h-center {
+  text-align-last: center;
+}
+.center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+.hidden {
+  visibility: hidden;
+}
+
+footer {
+  position: fixed;
+  height: 100px;
+  bottom: 0;
+  width: 100%;
+  margin-bottom: -10px;
+}
+
+a.icon {
+  all: unset;
+  cursor: pointer;
+  margin: 10px;
+}
+
+a.icon > svg path {
+  fill: rgb(136, 136, 136);
+}
+
+a.icon > svg:hover path {
+  fill: rgb(34, 34, 34);
+}

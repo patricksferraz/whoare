@@ -109,3 +109,21 @@ func (s *Service) UpdateEmployee(ctx context.Context, employeeID, name, position
 
 	return nil
 }
+
+func (s *Service) DeleteEmployee(ctx context.Context, employeeID, employeePassword *string) error {
+	e, err := s.Repo.FindEmployee(ctx, employeeID)
+	if err != nil {
+		return err
+	}
+
+	if err = utils.CompareHashAndPassword(e.Password, *employeePassword); err != nil {
+		return errors.New("invalid password")
+	}
+
+	err = s.Repo.DeleteEmployee(ctx, e)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
