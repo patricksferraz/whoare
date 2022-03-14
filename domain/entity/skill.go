@@ -12,9 +12,10 @@ func init() {
 }
 
 type Skill struct {
-	Base      `json:",inline" valid:"-"`
-	Name      string      `json:"name" gorm:"column:name;type:varchar(255)" valid:"-"`
-	Employees []*Employee `json:"-" gorm:"many2many:employees_skils" valid:"-"`
+	Base            `json:",inline" valid:"-"`
+	Name            string            `json:"name" gorm:"column:name;type:varchar(255);unique" valid:"-"`
+	Employees       []*Employee       `json:"-" gorm:"many2many:employees_skils" valid:"-"`
+	EmployeesSkills []*EmployeesSkill `json:"-" gorm:"foreignKey:SkillID" valid:"-"`
 }
 
 func NewSkill(name string) (*Skill, error) {

@@ -13,14 +13,15 @@ func init() {
 }
 
 type Employee struct {
-	Base         `json:",inline" valid:"-"`
-	Name         string    `json:"name" gorm:"column:name;not null" valid:"required"`
-	Email        string    `json:"email" gorm:"column:email;not null" valid:"email"`
-	Password     string    `json:"-" gorm:"column:password;not null" valid:"required"`
-	Position     string    `json:"position" gorm:"column:position;not null" valid:"required"`
-	Presentation string    `json:"presentation" gorm:"column:presentation" valid:"required"`
-	HireDate     time.Time `json:"hire_date" gorm:"column:hire_date" valid:"required"`
-	Skills       []*Skill  `json:"-" gorm:"many2many:employees_skills" valid:"-"`
+	Base            `json:",inline" valid:"-"`
+	Name            string            `json:"name" gorm:"column:name;not null" valid:"required"`
+	Email           string            `json:"email" gorm:"column:email;not null" valid:"email"`
+	Password        string            `json:"-" gorm:"column:password;not null" valid:"required"`
+	Position        string            `json:"position" gorm:"column:position;not null" valid:"required"`
+	Presentation    string            `json:"presentation" gorm:"column:presentation" valid:"required"`
+	HireDate        time.Time         `json:"hire_date" gorm:"column:hire_date" valid:"required"`
+	Skills          []*Skill          `json:"-" gorm:"many2many:employees_skills" valid:"-"`
+	EmployeesSkills []*EmployeesSkill `json:"-" gorm:"foreignKey:EmployeeID" valid:"-"`
 }
 
 func NewEmployee(name, position, email, password, presentation string, hireDate time.Time) (*Employee, error) {

@@ -1,9 +1,9 @@
 {{template "partials/header" .}}
 
 <div class="container">
-    <div class="row">
-        <div class="one-half column" style="margin-top: 25%;">
-            <form action="" method="post" autocomplete="on" accept-charset="utf-8">
+    <form action="" method="post" autocomplete="on" accept-charset="utf-8">
+        <div class="row" style="margin-top: 15%;">
+            <div class="one-half column">
                 <div class="row">
                     <label for="email">Your email</label>
                     <input class="u-full-width" type="email" placeholder="Your email" name="email" id="email"
@@ -38,13 +38,120 @@
                     <span class="u-pull-right" style="margin-top: -20px;"><span id="words">500</span> characters left.</span>
                 </div>
                 <div class="row">
+                    <label for="skill">Add skill</label>
+                </div>
+                <div class="row">
+                    <!-- TODO: add sync with db skills -->
+                    <div class="eleven columns">
+                        <input class="u-full-width" type="text" id="skill" value="">
+                    </div>
+                    <div class="one column">
+                        <a href="#" onclick="addSkill()" class="icon" style="margin: auto;">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20"
+                                height="20" viewBox="0 0 256 256" xml:space="preserve">
+                                <g transform="translate(128 128) scale(0.87 0.87)">
+                                    <g transform="translate(-144.89999999999998 -144.90000000000003) scale(3.22 3.22)">
+                                        <path d="M 45 90 c -3.866 0 -7 -3.134 -7 -7 V 7 c 0 -3.866 3.134 -7 7 -7 s 7 3.134 7 7 v 76 C 52 86.866 48.866 90 45 90 z" />
+                                        <path d="M 83 52 H 7 c -3.866 0 -7 -3.134 -7 -7 s 3.134 -7 7 -7 h 76 c 3.866 0 7 3.134 7 7 S 86.866 52 83 52 z" />
+                                    </g>
+                                </g>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
                     <label for="name">Set your password</label>
                     <input class="u-full-width" type="password" placeholder="Your name" name="password" id="password" required>
                 </div>
                 <input class="u-pull-right" type="submit" value="submit">
-            </form>
+            </div>
+            <div class="one-half column">
+                <h5>Skill list</h5>
+                <div id="skill-list">
+                    {{if not .Employee.EmployeesSkills}}
+                        <p id="empty-flag">empty</p>
+                    {{else}}
+                        {{range $i, $e := .Employee.EmployeesSkills}}
+                            <div div class="row" id="{{.Skill.Name}}">
+                                <div class="six columns">
+                                    <input class="u-full-width" type="text" id="{{.Skill.Name}}-name" name="skills.{{$i}}.name" value="{{.Skill.Name}}" readonly>
+                                </div>
+                                <div class="five columns">
+                                    <select class="u-full-width" name="skills.{{$i}}.xp" id="{{.Skill.Name}}-xp">
+                                        <option value="1">Junior</option>
+                                        <option value="2">Full</option>
+                                        <option value="3">Senior</option>
+                                        <option value="4">Specialist</option>
+                                    </select>
+                                </div>
+                                <script>
+                                    xp = { 'JUNIOR':1, 'FULL':2, 'SENIOR':3, 'SPECIALIST':4}
+                                    document.getElementById('{{.Skill.Name}}-xp').value = xp['{{.XP}}']
+                                </script>
+                                <div class="one column">
+                                    <a href="#" onclick="deleteSkill('{{.Skill.Name}}')" class="icon" style="margin: auto;"><strong>X</strong></a>
+                                </div>
+                            </div>
+                        {{end}}
+                    {{end}}
+                </div>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
+
+<script>
+    function setAttrs(list, elem, attr) {
+        list.querySelectorAll(elem).forEach(function(n, idx) {
+            n.name = `skills.${idx}.${attr}`
+        })
+    }
+
+    function addSkill() {
+        eSkill = document.getElementById('skill')
+        skill = eSkill.value.toLowerCase();
+        eSkill.value = '';
+        //xhr = new XMLHttpRequest();
+        //xhr.open('POST', '/addSkill', true);
+        exists = document.getElementById(skill) != null;
+        if (skill && !exists) {
+            list = document.getElementById('skill-list');
+            flag = list.querySelector('#empty-flag')
+            if (flag) {
+                flag.remove();
+            }
+            list.innerHTML += `
+            <div div class="row" id="${skill}">
+                <div class="six columns">
+                    <input class="u-full-width" type="text" id="${skill}-name" name="" value="${skill}" readonly>
+                </div>
+                <div class="five columns">
+                    <select class="u-full-width" name="" id="${skill}-xp">
+                        <option value="1">Junior</option>
+                        <option value="2">Full</option>
+                        <option value="3">Senior</option>
+                        <option value="4">Specialist</option>
+                    </select>
+                </div>
+                <div class="one column">
+                    <a href="#" onclick="deleteSkill('${skill}')" class="icon" style="margin: auto;"><strong>X</strong></a>
+                </div>
+            </div>`;
+
+            setAttrs(list, 'select', 'xp');
+            setAttrs(list, 'input', 'name');
+        }
+    }
+
+    function deleteSkill(skill) {
+        document.getElementById(skill).remove();
+        list = document.getElementById('skill-list');
+        if (list.querySelectorAll("div").length == 0) {
+            list.innerHTML = `<p id="empty-flag">empty</p>`;
+        }
+        setAttrs(list, 'select', 'xp');
+        setAttrs(list, 'input', 'name');
+    }
+</script>
 
 {{template "partials/footer" .}}

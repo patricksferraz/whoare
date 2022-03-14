@@ -52,13 +52,18 @@ func (s *Service) SearchEmployees(ctx context.Context, query *string) ([]*entity
 }
 
 func (s *Service) CreateSkill(ctx context.Context, name string) (*string, error) {
-	e, err := entity.NewSkill(name)
-	if err != nil {
-		return nil, err
-	}
+	var e *entity.Skill
 
-	if err = s.Repo.CreateSkill(ctx, e); err != nil {
-		return nil, err
+	e, err := s.Repo.FindSkillByName(ctx, &name)
+	if err != nil {
+		e, err = entity.NewSkill(name)
+		if err != nil {
+			return nil, err
+		}
+
+		if err = s.Repo.CreateSkill(ctx, e); err != nil {
+			return nil, err
+		}
 	}
 
 	return &e.ID, nil
@@ -122,6 +127,29 @@ func (s *Service) DeleteEmployee(ctx context.Context, employeeID, employeePasswo
 
 	err = s.Repo.DeleteEmployee(ctx, e)
 	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Service) AddEmployeeSkill(ctx context.Context, employeeID, skillID *string, xp int) error {
+	e, err := s.Repo.FindEmployee(ctx, employeeID)
+	if err != nil {
+		return err
+	}
+
+	skill, err := s.Repo.FindSkill(ctx, skillID)
+	if err != nil {
+		return err
+	}
+
+	es, err := entity.NewEmployeesSkill(e, skill, entity.XP(xp))
+	if err != nil {
+		return err
+	}
+
+	if err = s.Repo.AddEmployeeSkill(ctx, es); err != nil {
 		return err
 	}
 

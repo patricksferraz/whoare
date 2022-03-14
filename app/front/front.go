@@ -69,12 +69,17 @@ func (a *Front) PostRegister(c *fiber.Ctx) error {
 		)
 	}
 
-	_, err = a.Service.CreateEmployee(c.Context(), req.Name, req.Position, req.Email, req.Password, req.Presentation, hireDate)
+	e, err := a.Service.CreateEmployee(c.Context(), req.Name, req.Position, req.Email, req.Password, req.Presentation, hireDate)
 	if err != nil {
 		return c.Render("errors/error", fiber.Map{
 			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
 			"Error":  err.Error()},
 		)
+	}
+
+	for _, s := range req.Skills {
+		sID, _ := a.Service.CreateSkill(c.Context(), s.Name)  // TODO: handle error
+		a.Service.AddEmployeeSkill(c.Context(), e, sID, s.XP) // TODO: handle error
 	}
 
 	return c.Redirect("/")
@@ -150,8 +155,26 @@ func (a *Front) PostProfileEdit(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Render("errors/error", fiber.Map{
 			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
-			"Error":  err.Error()},
-		)
+			"Error":  err.Error(),
+		})
+	}
+
+	for _, s := range req.Skills {
+		sID, err := a.Service.CreateSkill(c.Context(), s.Name)
+		if err != nil {
+			return c.Render("errors/error", fiber.Map{
+				"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+				"Error":  err.Error(),
+			})
+		}
+
+		err = a.Service.AddEmployeeSkill(c.Context(), &employeeID, sID, s.XP)
+		if err != nil {
+			return c.Render("errors/error", fiber.Map{
+				"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+				"Error":  err.Error(),
+			})
+		}
 	}
 
 	return c.Redirect(fmt.Sprintf("/profile/%s", employeeID))

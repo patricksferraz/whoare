@@ -26,7 +26,7 @@ func (r *Repository) CreateEmployee(ctx context.Context, employee *entity.Employ
 func (r *Repository) FindEmployee(ctx context.Context, employeeID *string) (*entity.Employee, error) {
 	var e entity.Employee
 
-	r.Orm.Db.First(&e, "id = ?", *employeeID)
+	r.Orm.Db.Preload("EmployeesSkills.Skill").First(&e, "id = ?", *employeeID)
 
 	if e.ID == "" {
 		return nil, fmt.Errorf("no employee found")
@@ -43,7 +43,7 @@ func (r *Repository) SaveEmployee(ctx context.Context, employee *entity.Employee
 func (r *Repository) SearchEmployees(ctx context.Context, query *string) ([]*entity.Employee, error) {
 	var e []*entity.Employee
 
-	err := r.Orm.Db.Where("name LIKE ?", "%"+*query+"%").Find(&e).Error
+	err := r.Orm.Db.Where("name LIKE ?", "%"+*query+"%").Preload("EmployeesSkills.Skill").Find(&e).Error
 	if err != nil {
 		return nil, err
 	}
@@ -68,6 +68,18 @@ func (r *Repository) FindSkill(ctx context.Context, skillID *string) (*entity.Sk
 	return &e, nil
 }
 
+func (r *Repository) FindSkillByName(ctx context.Context, name *string) (*entity.Skill, error) {
+	var e entity.Skill
+
+	r.Orm.Db.First(&e, "name = ?", *name)
+
+	if e.ID == "" {
+		return nil, fmt.Errorf("no skill found")
+	}
+
+	return &e, nil
+}
+
 func (r *Repository) SaveSkill(ctx context.Context, skill *entity.Skill) error {
 	err := r.Orm.Db.Save(skill).Error
 	return err
@@ -75,5 +87,10 @@ func (r *Repository) SaveSkill(ctx context.Context, skill *entity.Skill) error {
 
 func (r *Repository) DeleteEmployee(ctx context.Context, employee *entity.Employee) error {
 	err := r.Orm.Db.Delete(employee).Error
+	return err
+}
+
+func (r *Repository) AddEmployeeSkill(ctx context.Context, employeeSkill *entity.EmployeesSkill) error {
+	err := r.Orm.Db.Save(employeeSkill).Error
 	return err
 }

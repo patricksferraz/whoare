@@ -41,15 +41,15 @@ func (m *MigrateOrm) load() {
 					Presentation string    `gorm:"column:presentation"`
 					HireDate     time.Time `gorm:"column:hire_date"`
 				}
-				type XP int
-				type EmployeesSkill struct {
-					EmployeeID string `gorm:"column:employee_id;type:uuid;not null;unique_index:unique_employee_skill;primaryKey"`
-					SkillID    string `gorm:"column:skill_id;type:uuid;not null;unique_index:unique_employee_skill;primaryKey"`
-					XP         XP     `gorm:"column:xp;not null"`
-				}
 				type Skill struct {
 					Base `json:",inline"`
-					Name string `json:"name" gorm:"column:name;type:varchar(255)"`
+					Name string `json:"name" gorm:"column:name;type:varchar(255);unique"`
+				}
+				type XP int
+				type EmployeesSkill struct {
+					XP         XP     `gorm:"column:xp;not null"`
+					SkillID    string `gorm:"column:skill_id;type:uuid;not null;unique_index:unique_employee_skill;primaryKey"`
+					EmployeeID string `gorm:"column:employee_id;type:uuid;not null;unique_index:unique_employee_skill;primaryKey"`
 				}
 
 				return db.AutoMigrate(&Employee{}, &Skill{}, &EmployeesSkill{})
