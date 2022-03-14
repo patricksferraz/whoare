@@ -11,6 +11,7 @@ import (
 	rest "github.com/patricksferraz/whoare/app/front"
 	"github.com/patricksferraz/whoare/config"
 	"github.com/patricksferraz/whoare/infra/db"
+	"gorm.io/gorm/logger"
 )
 
 func init() {
@@ -33,19 +34,20 @@ func main() {
 		log.Fatal(err)
 	}
 
-	orm, err := db.NewDbOrm(*conf.Db.DsnType, *conf.Db.Dsn)
+	l := logger.Error
+	if *conf.Db.Debug {
+		l = logger.Info
+	}
+
+	orm, err := db.NewDbOrm(*conf.Db.Dsn, l)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if *conf.Db.Debug {
-		orm.Debug(true)
+	if err = orm.Migrate(); err != nil {
+		log.Fatal(err)
 	}
-
-	if *conf.Db.Migrate {
-		orm.Migrate()
-	}
-	defer orm.Db.Close()
+	log.Printf("migration did run successfully")
 
 	rest.StartFront(orm)
 }

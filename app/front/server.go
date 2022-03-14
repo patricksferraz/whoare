@@ -1,6 +1,7 @@
 package front
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -42,7 +43,10 @@ func StartFront(orm *db.DbOrm) {
 	app.Post("/profile/:employee_id/delete", front.ProfileDelete)
 
 	app.Use(func(c *fiber.Ctx) error {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusNotFound, "Error": "Not Found"}) // => 404 "Not Found"
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusNotFound, fiber.ErrNotFound),
+			"Error":  c.Context().Request.URI()},
+		) // => 404 "Not Found"
 	})
 
 	err := app.Listen("0.0.0.0:8080")
