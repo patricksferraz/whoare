@@ -34,14 +34,15 @@ func StartFront(orm *db.DbOrm) {
 	// middleware := NewMiddleware(sessionStore)
 
 	app.Get("/", front.Index)
-	app.Get("/register", front.Register)
-	app.Post("/register", front.Register)
+	app.Get("/register", front.GetRegister)
+	app.Post("/register", front.PostRegister)
 	app.Get("/profile/:employee_id", front.Profile)
-	app.Get("/profile/:employee_id/edit", front.ProfileEdit)
-	app.Post("/profile/:employee_id/edit", front.ProfileEdit)
+	app.Get("/profile/:employee_id/edit", front.GetProfileEdit)
+	app.Post("/profile/:employee_id/edit", front.PostProfileEdit)
+	app.Post("/profile/:employee_id/delete", front.ProfileDelete)
 
 	app.Use(func(c *fiber.Ctx) error {
-		return c.Render("errors/404", fiber.Map{"Status": 404, "Error": "Not Found"}) // => 404 "Not Found"
+		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusNotFound, "Error": "Not Found"}) // => 404 "Not Found"
 	})
 
 	err := app.Listen("0.0.0.0:8080")

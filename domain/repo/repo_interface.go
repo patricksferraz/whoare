@@ -11,6 +11,7 @@ type RepoInterface interface {
 	FindEmployee(ctx context.Context, employeeID *string) (*entity.Employee, error)
 	SaveEmployee(ctx context.Context, employee *entity.Employee) error
 	SearchEmployees(ctx context.Context, query *string) ([]*entity.Employee, error)
+	DeleteEmployee(ctx context.Context, employee *entity.Employee) error
 
 	CreateSkill(ctx context.Context, skill *entity.Skill) error
 	FindSkill(ctx context.Context, skillID *string) (*entity.Skill, error)

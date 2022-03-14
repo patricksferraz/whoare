@@ -72,3 +72,8 @@ func (r *Repository) SaveSkill(ctx context.Context, skill *entity.Skill) error {
 	err := r.Orm.Db.Save(skill).Error
 	return err
 }
+
+func (r *Repository) DeleteEmployee(ctx context.Context, employee *entity.Employee) error {
+	err := r.Orm.Db.Delete(employee).Error
+	return err
+}
