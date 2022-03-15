@@ -16,15 +16,18 @@ func init() {
 }
 
 type EmployeesSkill struct {
-	EmployeeID string `gorm:"column:employee_id;type:uuid;not null;unique_index:unique_employee_skill;primaryKey" valid:"uuid"`
-	SkillID    string `gorm:"column:skill_id;type:uuid;not null;unique_index:unique_employee_skill;primaryKey" valid:"uuid"`
-	XP         XP     `json:"xp" gorm:"column:xp;not null" valid:"xp,optional"`
+	XP         XP        `json:"xp" gorm:"column:xp;not null" valid:"xp"`
+	SkillID    string    `gorm:"column:skill_id;type:uuid;not null;unique_index:unique_employee_skill;primaryKey" valid:"uuid"`
+	Skill      *Skill    `json:"-" valid:"-"`
+	EmployeeID string    `gorm:"column:employee_id;type:uuid;not null;unique_index:unique_employee_skill;primaryKey" valid:"uuid"`
+	Employee   *Employee `json:"-" valid:"-"`
 }
 
-func NewEmployeesSkill(employeeID, skillID string) (*EmployeesSkill, error) {
+func NewEmployeesSkill(employee *Employee, skill *Skill, xp XP) (*EmployeesSkill, error) {
 	e := EmployeesSkill{
-		EmployeeID: employeeID,
-		SkillID:    skillID,
+		EmployeeID: employee.ID,
+		SkillID:    skill.ID,
+		XP:         xp,
 	}
 
 	if err := e.isValid(); err != nil {
@@ -39,7 +42,7 @@ func (e *EmployeesSkill) isValid() error {
 	return err
 }
 
-func (e *EmployeesSkill) AddXp(xp XP) error {
+func (e *EmployeesSkill) SetXp(xp XP) error {
 	e.XP = xp
 	err := e.isValid()
 	return err

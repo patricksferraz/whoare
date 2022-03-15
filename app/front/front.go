@@ -27,12 +27,18 @@ func (a *Front) Index(c *fiber.Ctx) error {
 
 	err := c.QueryParser(&req)
 	if err != nil {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusBadRequest, "Error": err.Error()})
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+			"Error":  err.Error()},
+		)
 	}
 
 	e, err := a.Service.SearchEmployees(c.Context(), &req.Q)
 	if err != nil {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusInternalServerError, "Error": err.Error()})
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusInternalServerError, fiber.ErrInternalServerError),
+			"Error":  err.Error()},
+		)
 	}
 
 	return c.Render("index", fiber.Map{
@@ -49,17 +55,31 @@ func (a *Front) PostRegister(c *fiber.Ctx) error {
 	var req RegisterRequest
 
 	if err := c.BodyParser(&req); err != nil {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusInternalServerError, "Error": err.Error()})
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusInternalServerError, fiber.ErrInternalServerError),
+			"Error":  err.Error()},
+		)
 	}
 
 	hireDate, err := time.Parse("2006-01-02", req.HireDate)
 	if err != nil {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusBadRequest, "Error": err.Error()})
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+			"Error":  err.Error()},
+		)
 	}
 
-	_, err = a.Service.CreateEmployee(c.Context(), req.Name, req.Position, req.Email, req.Password, req.Presentation, hireDate)
+	e, err := a.Service.CreateEmployee(c.Context(), req.Name, req.Position, req.Email, req.Password, req.Presentation, hireDate)
 	if err != nil {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusInternalServerError, "Error": err.Error()})
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+			"Error":  err.Error()},
+		)
+	}
+
+	for _, s := range req.Skills {
+		sID, _ := a.Service.CreateSkill(c.Context(), s.Name)  // TODO: handle error
+		a.Service.AddEmployeeSkill(c.Context(), e, sID, s.XP) // TODO: handle error
 	}
 
 	return c.Redirect("/")
@@ -68,12 +88,18 @@ func (a *Front) PostRegister(c *fiber.Ctx) error {
 func (a *Front) Profile(c *fiber.Ctx) error {
 	employeeID := c.Params("employee_id")
 	if !govalidator.IsUUIDv4(employeeID) {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusBadRequest, "Error": "employee_id is not a valid uuid"})
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+			"Error":  "employee_id is not a valid uuid"},
+		)
 	}
 
 	employee, err := a.Service.FindEmployee(c.Context(), &employeeID)
 	if err != nil {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusNotFound, "Error": err.Error()})
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusNotFound, fiber.ErrNotFound),
+			"Error":  err.Error()},
+		)
 	}
 
 	return c.Render("profile", fiber.Map{"Employee": employee})
@@ -82,12 +108,18 @@ func (a *Front) Profile(c *fiber.Ctx) error {
 func (a *Front) GetProfileEdit(c *fiber.Ctx) error {
 	employeeID := c.Params("employee_id")
 	if !govalidator.IsUUIDv4(employeeID) {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusBadRequest, "Error": "employee_id is not a valid uuid"})
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+			"Error":  "employee_id is not a valid uuid"},
+		)
 	}
 
 	employee, err := a.Service.FindEmployee(c.Context(), &employeeID)
 	if err != nil {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusNotFound, "Error": err.Error()})
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusNotFound, fiber.ErrNotFound),
+			"Error":  err.Error()},
+		)
 	}
 
 	return c.Render("register", fiber.Map{"Employee": employee})
@@ -98,21 +130,51 @@ func (a *Front) PostProfileEdit(c *fiber.Ctx) error {
 
 	employeeID := c.Params("employee_id")
 	if !govalidator.IsUUIDv4(employeeID) {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusBadRequest, "Error": "employee_id is not a valid uuid"})
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+			"Error":  "employee_id is not a valid uuid"},
+		)
 	}
 
 	if err := c.BodyParser(&req); err != nil {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusInternalServerError, "Error": err.Error()})
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusInternalServerError, fiber.ErrInternalServerError),
+			"Error":  err.Error()},
+		)
 	}
 
 	hireDate, err := time.Parse("2006-01-02", req.HireDate)
 	if err != nil {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusBadRequest, "Error": err.Error()})
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+			"Error":  err.Error()},
+		)
 	}
 
 	err = a.Service.UpdateEmployee(c.Context(), employeeID, req.Name, req.Position, req.Email, req.Password, req.Presentation, hireDate)
 	if err != nil {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusInternalServerError, "Error": err.Error()})
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+			"Error":  err.Error(),
+		})
+	}
+
+	for _, s := range req.Skills {
+		sID, err := a.Service.CreateSkill(c.Context(), s.Name)
+		if err != nil {
+			return c.Render("errors/error", fiber.Map{
+				"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+				"Error":  err.Error(),
+			})
+		}
+
+		err = a.Service.AddEmployeeSkill(c.Context(), &employeeID, sID, s.XP)
+		if err != nil {
+			return c.Render("errors/error", fiber.Map{
+				"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+				"Error":  err.Error(),
+			})
+		}
 	}
 
 	return c.Redirect(fmt.Sprintf("/profile/%s", employeeID))
@@ -123,16 +185,25 @@ func (a *Front) ProfileDelete(c *fiber.Ctx) error {
 
 	employeeID := c.Params("employee_id")
 	if !govalidator.IsUUIDv4(employeeID) {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusBadRequest, "Error": "employee_id is not a valid uuid"})
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+			"Error":  "employee_id is not a valid uuid"},
+		)
 	}
 
 	if err := c.BodyParser(&req); err != nil {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusInternalServerError, "Error": err.Error()})
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusInternalServerError, fiber.ErrInternalServerError),
+			"Error":  err.Error()},
+		)
 	}
 
 	err := a.Service.DeleteEmployee(c.Context(), &employeeID, &req.Password)
 	if err != nil {
-		return c.Render("errors/error", fiber.Map{"Status": fiber.StatusBadRequest, "Error": err.Error()})
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+			"Error":  err.Error()},
+		)
 	}
 
 	return c.Redirect("/")

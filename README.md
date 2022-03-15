@@ -21,12 +21,12 @@
 
 <!-- PROJECT LOGO -->
 <br />
-<p align="center">
-  <!-- <a href="https://github.com/patricksferraz/whoare">
-    <img src="img/logo.png" alt="Logo" width="100" height="70">
-  </a> -->
+<div align="center">
+  <a href="https://github.com/patricksferraz/whoare">
+    <img src="app/front/public/images/whoare.png" alt="Logo" width="100" height="100">
+  </a>
 
-  <h3 align="center">Who Are</h3>
+  <h3 align="center">Who Are :)</h3>
 
   <p align="center">
     <a href="https://github.com/patricksferraz/whoare"><strong>Explore the docs »</strong></a>
@@ -38,7 +38,7 @@
     ·
     <a href="https://github.com/patricksferraz/whoare">Request Feature</a>-->
   </p>
-</p>
+</div>
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">

@@ -592,3 +592,54 @@ a.icon > svg path {
 a.icon > svg:hover path {
   fill: rgb(34, 34, 34);
 }
+
+input[readonly],
+input[readonly]:focus {
+  all: unset;
+  font-size: 1.8rem;
+  line-height: 1.5;
+  letter-spacing: -0.05rem;
+  font-weight: bold;
+}
+
+.chip {
+  display: inline-flex;
+  flex-direction: row;
+  border: none;
+  cursor: default;
+  height: 25px;
+  outline: none;
+  padding: 0;
+  font-size: 12px;
+  white-space: nowrap;
+  align-items: center;
+  border-radius: 16px;
+  vertical-align: middle;
+  text-decoration: none;
+  justify-content: center;
+}
+.chip-content {
+  cursor: text;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.chip.JUNIOR {
+  background-color: #eff5f8;
+  color: rgb(34, 34, 34);
+}
+.chip.FULL {
+  background-color: #e2e8ec;
+  color: rgb(34, 34, 34);
+}
+.chip.SENIOR {
+  background-color: #d3d8db;
+  color: rgb(34, 34, 34);
+}
+.chip.SPECIALIST {
+  background-color: #bbbfc0;
+  color: rgb(34, 34, 34);
+}
