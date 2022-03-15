@@ -23,6 +23,13 @@
                                 <td><a href="/profile/{{.ID}}">{{.Name}}</a><br>{{.Position}}, <span id="{{.ID}}_time"></span></td>
                                 <td><a href="mailto:{{.Email}}">{{.Email}}</a></td>
                                 <td>
+                                    {{range .EmployeesSkills}}
+                                        <div class="chip {{.XP}}">
+                                            <div class="chip-content">{{.Skill.Name}}</div>
+                                        </div>
+                                    {{end}}
+                                </td>
+                                <td>
                                     <a href="/profile/{{.ID}}/edit" class="icon">
                                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20"
                                             height="20" viewBox="0 0 490.273 490.273" style="enable-background:new 0 0 490.273 490.273;"
