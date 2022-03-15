@@ -43,7 +43,12 @@ func (r *Repository) SaveEmployee(ctx context.Context, employee *entity.Employee
 func (r *Repository) SearchEmployees(ctx context.Context, query *string) ([]*entity.Employee, error) {
 	var e []*entity.Employee
 
-	err := r.Orm.Db.Where("name LIKE ?", "%"+*query+"%").Preload("EmployeesSkills.Skill").Find(&e).Error
+	err := r.Orm.Db.Preload("EmployeesSkills.Skill").
+		Joins("JOIN employees_skills es ON es.employee_id = employees.id JOIN skills s ON s.id = es.skill_id").
+		Where("s.name LIKE ?", "%"+*query+"%").
+		Or("employees.name LIKE ?", "%"+*query+"%").
+		Group("employees.id").
+		Find(&e).Error
 	if err != nil {
 		return nil, err
 	}
