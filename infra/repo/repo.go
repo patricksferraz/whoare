@@ -94,3 +94,10 @@ func (r *Repository) AddEmployeeSkill(ctx context.Context, employeeSkill *entity
 	err := r.Orm.Db.Save(employeeSkill).Error
 	return err
 }
+
+// NOTE: temporary
+func (r *Repository) DeleteEmployeeSkills(ctx context.Context, employeeID *string) error {
+	var e entity.EmployeesSkill
+	err := r.Orm.Db.Delete(&e, "employee_id = ?", *employeeID).Error
+	return err
+}

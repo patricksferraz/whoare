@@ -136,7 +136,7 @@ func (s *Service) DeactivateEmployee(ctx context.Context, employeeID, employeePa
 	return nil
 }
 
-func (s *Service) AddEmployeeSkill(ctx context.Context, employeeID, skillID *string, xp int) error {
+func (s *Service) AddEmployeeSkill(ctx context.Context, employeeID, skillID, note *string, xp int) error {
 	e, err := s.Repo.FindEmployee(ctx, employeeID)
 	if err != nil {
 		return err
@@ -147,7 +147,7 @@ func (s *Service) AddEmployeeSkill(ctx context.Context, employeeID, skillID *str
 		return err
 	}
 
-	es, err := entity.NewEmployeesSkill(e, skill, entity.XP(xp))
+	es, err := entity.NewEmployeesSkill(e, skill, entity.XP(xp), *note)
 	if err != nil {
 		return err
 	}
@@ -179,4 +179,10 @@ func (s *Service) ActivateEmployee(ctx context.Context, employeeID, employeePass
 	}
 
 	return nil
+}
+
+// NOTE: temporary
+func (s *Service) DeleteEmployeeSkills(ctx context.Context, employeeID *string) error {
+	err := s.Repo.DeleteEmployeeSkills(ctx, employeeID)
+	return err
 }
