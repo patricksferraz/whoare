@@ -180,8 +180,8 @@ func (a *Front) PostProfileEdit(c *fiber.Ctx) error {
 	return c.Redirect(fmt.Sprintf("/profile/%s", employeeID))
 }
 
-func (a *Front) ProfileDelete(c *fiber.Ctx) error {
-	var req DeleteRequest
+func (a *Front) ProfileDeactivate(c *fiber.Ctx) error {
+	var req DeactivateRequest
 
 	employeeID := c.Params("employee_id")
 	if !govalidator.IsUUIDv4(employeeID) {
@@ -198,7 +198,52 @@ func (a *Front) ProfileDelete(c *fiber.Ctx) error {
 		)
 	}
 
-	err := a.Service.DeleteEmployee(c.Context(), &employeeID, &req.Password)
+	terminationDate, err := time.Parse("2006-01-02", req.TaminationDate)
+	if err != nil {
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+			"Error":  err.Error()},
+		)
+	}
+
+	err = a.Service.DeactivateEmployee(c.Context(), &employeeID, &req.Password, terminationDate)
+	if err != nil {
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+			"Error":  err.Error()},
+		)
+	}
+
+	return c.Redirect("/")
+}
+
+func (a *Front) ProfileActivate(c *fiber.Ctx) error {
+	var req ActivateRequest
+
+	employeeID := c.Params("employee_id")
+	if !govalidator.IsUUIDv4(employeeID) {
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+			"Error":  "employee_id is not a valid uuid"},
+		)
+	}
+
+	if err := c.BodyParser(&req); err != nil {
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusInternalServerError, fiber.ErrInternalServerError),
+			"Error":  err.Error()},
+		)
+	}
+
+	hireDate, err := time.Parse("2006-01-02", req.HireDate)
+	if err != nil {
+		return c.Render("errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+			"Error":  err.Error()},
+		)
+	}
+
+	err = a.Service.ActivateEmployee(c.Context(), &employeeID, &req.Password, hireDate)
 	if err != nil {
 		return c.Render("errors/error", fiber.Map{
 			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),

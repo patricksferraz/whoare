@@ -18,10 +18,16 @@ type Skill struct {
 	XP   int    `json:"xp" xml:"xp" form:"xp"`
 }
 
-type DeleteRequest struct {
-	Password string `json:"password" xml:"password" form:"password"`
+type DeactivateRequest struct {
+	TaminationDate string `json:"termination_date" xml:"termination_date" form:"termination_date"`
+	Password       string `json:"password" xml:"password" form:"password"`
 }
 
 type SearchRequest struct {
 	Q string `query:"q"`
+}
+
+type ActivateRequest struct {
+	HireDate string `json:"hire_date" xml:"hire_date" form:"hire_date"`
+	Password string `json:"password" xml:"password" form:"password"`
 }

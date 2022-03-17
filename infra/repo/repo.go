@@ -44,7 +44,7 @@ func (r *Repository) SearchEmployees(ctx context.Context, query *string) ([]*ent
 	var e []*entity.Employee
 
 	err := r.Orm.Db.Preload("EmployeesSkills.Skill").
-		Joins("JOIN employees_skills es ON es.employee_id = employees.id JOIN skills s ON s.id = es.skill_id").
+		Joins("LEFT JOIN employees_skills es ON es.employee_id = employees.id LEFT JOIN skills s ON s.id = es.skill_id").
 		Where("s.name LIKE ?", "%"+*query+"%").
 		Or("employees.name LIKE ?", "%"+*query+"%").
 		Group("employees.id").
@@ -87,11 +87,6 @@ func (r *Repository) FindSkillByName(ctx context.Context, name *string) (*entity
 
 func (r *Repository) SaveSkill(ctx context.Context, skill *entity.Skill) error {
 	err := r.Orm.Db.Save(skill).Error
-	return err
-}
-
-func (r *Repository) DeleteEmployee(ctx context.Context, employee *entity.Employee) error {
-	err := r.Orm.Db.Delete(employee).Error
 	return err
 }
 
