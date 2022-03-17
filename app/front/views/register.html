@@ -87,6 +87,10 @@
                                 <div class="one column">
                                     <a href="#" onclick="deleteSkill('{{.Skill.Name}}')" class="icon" style="margin: auto;"><strong>X</strong></a>
                                 </div>
+                                <div class="twelve columns">
+                                    <textarea class="u-full-width" placeholder="optional {{.Skill.Name}} notes …" name="skills.{{$i}}.note" id="{{.Skill.Name}}-note"
+                                        maxlength="500">{{.Note}}</textarea>
+                                </div>
                             </div>
                         {{end}}
                     {{end}}
@@ -138,10 +142,15 @@
                 <div class="one column">
                     <a href="#" onclick="deleteSkill('${skill}')" class="icon" style="margin: auto;"><strong>X</strong></a>
                 </div>
+                <div class="twelve columns">
+                    <textarea class="u-full-width" placeholder="optional ${skill} notes …" name="" id="${skill}-note"
+                        maxlength="500"></textarea>
+                </div>
             </div>`;
 
             setAttrs(list, 'select', 'xp');
             setAttrs(list, 'input', 'name');
+            setAttrs(list, 'textarea', 'note');
         }
     }
 
@@ -153,6 +162,7 @@
         }
         setAttrs(list, 'select', 'xp');
         setAttrs(list, 'input', 'name');
+        setAttrs(list, 'textarea', 'note');
     }
 </script>
 

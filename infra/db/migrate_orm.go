@@ -50,6 +50,7 @@ func (m *MigrateOrm) load() {
 				type XP int
 				type EmployeesSkill struct {
 					XP         XP     `gorm:"column:xp;not null"`
+					Note       string `gorm:"column:note;varchar(500)"`
 					SkillID    string `gorm:"column:skill_id;type:uuid;not null;unique_index:unique_employee_skill;primaryKey"`
 					EmployeeID string `gorm:"column:employee_id;type:uuid;not null;unique_index:unique_employee_skill;primaryKey"`
 				}

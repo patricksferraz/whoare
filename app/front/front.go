@@ -77,9 +77,23 @@ func (a *Front) PostRegister(c *fiber.Ctx) error {
 		)
 	}
 
+	// TODO: change to batch
 	for _, s := range req.Skills {
-		sID, _ := a.Service.CreateSkill(c.Context(), s.Name)  // TODO: handle error
-		a.Service.AddEmployeeSkill(c.Context(), e, sID, s.XP) // TODO: handle error
+		sID, err := a.Service.CreateSkill(c.Context(), s.Name)
+		if err != nil {
+			return c.Render("errors/error", fiber.Map{
+				"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+				"Error":  err.Error(),
+			})
+		}
+
+		err = a.Service.AddEmployeeSkill(c.Context(), e, sID, &s.Note, s.XP)
+		if err != nil {
+			return c.Render("errors/error", fiber.Map{
+				"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+				"Error":  err.Error(),
+			})
+		}
 	}
 
 	return c.Redirect("/")
@@ -159,6 +173,13 @@ func (a *Front) PostProfileEdit(c *fiber.Ctx) error {
 		})
 	}
 
+	// TODO: changes to best practices
+	err = a.Service.DeleteEmployeeSkills(c.Context(), &employeeID)
+	if err != nil {
+		return err
+	}
+
+	// TODO: change to batch
 	for _, s := range req.Skills {
 		sID, err := a.Service.CreateSkill(c.Context(), s.Name)
 		if err != nil {
@@ -168,7 +189,7 @@ func (a *Front) PostProfileEdit(c *fiber.Ctx) error {
 			})
 		}
 
-		err = a.Service.AddEmployeeSkill(c.Context(), &employeeID, sID, s.XP)
+		err = a.Service.AddEmployeeSkill(c.Context(), &employeeID, sID, &s.Note, s.XP)
 		if err != nil {
 			return c.Render("errors/error", fiber.Map{
 				"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),

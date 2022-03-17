@@ -16,6 +16,7 @@ type RegisterRequest struct {
 type Skill struct {
 	Name string `json:"name" xml:"name" form:"name"`
 	XP   int    `json:"xp" xml:"xp" form:"xp"`
+	Note string `json:"note" xml:"note" form:"note"`
 }
 
 type DeactivateRequest struct {

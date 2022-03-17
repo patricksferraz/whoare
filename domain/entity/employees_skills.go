@@ -17,17 +17,19 @@ func init() {
 
 type EmployeesSkill struct {
 	XP         XP        `json:"xp" gorm:"column:xp;not null" valid:"xp"`
+	Note       string    `json:"note" gorm:"column:note;varchar(500)" valid:"-"`
 	SkillID    string    `gorm:"column:skill_id;type:uuid;not null;unique_index:unique_employee_skill;primaryKey" valid:"uuid"`
 	Skill      *Skill    `json:"-" valid:"-"`
 	EmployeeID string    `gorm:"column:employee_id;type:uuid;not null;unique_index:unique_employee_skill;primaryKey" valid:"uuid"`
 	Employee   *Employee `json:"-" valid:"-"`
 }
 
-func NewEmployeesSkill(employee *Employee, skill *Skill, xp XP) (*EmployeesSkill, error) {
+func NewEmployeesSkill(employee *Employee, skill *Skill, xp XP, note string) (*EmployeesSkill, error) {
 	e := EmployeesSkill{
 		EmployeeID: employee.ID,
 		SkillID:    skill.ID,
 		XP:         xp,
+		Note:       note,
 	}
 
 	if err := e.isValid(); err != nil {
@@ -44,6 +46,12 @@ func (e *EmployeesSkill) isValid() error {
 
 func (e *EmployeesSkill) SetXp(xp XP) error {
 	e.XP = xp
+	err := e.isValid()
+	return err
+}
+
+func (e *EmployeesSkill) SetNote(note string) error {
+	e.Note = note
 	err := e.isValid()
 	return err
 }

@@ -1,7 +1,7 @@
 {{template "partials/header" .}}
 
 <div class="container">
-    <div class="row" style="margin-top: 25%;">
+    <div class="row" style="margin-top: 15%;">
         <div class="twelve columns">
             <div class="u-pull-right">
                 <a href="./{{.Employee.ID}}/edit" class="icon" style="margin: 0;">
@@ -24,7 +24,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="one-half column">
+        <div class="twelve columns">
             <h1>
                 {{.Employee.Name}}
                 <a href="mailto:{{.Employee.Email}}">
@@ -63,14 +63,17 @@
     </div>
     <hr>
     <div class="row">
-        <div class="one-half column">
+        <div class="twelve column">
             <h5>Skill list</h5>
             {{if not .Employee.EmployeesSkills}}
                 <p>empty</p>
             {{else}}
                 <ul>
                     {{range .Employee.EmployeesSkills}}
-                        <li>{{.Skill.Name}} - {{.XP}}</li>
+                        <li><strong>{{.Skill.Name}} - {{.XP}}</strong></li>
+                        {{if .Note}}
+                            <p>{{.Note}}</p>
+                        {{end}}
                     {{end}}
                 </ul>
             {{end}}

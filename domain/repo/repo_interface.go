@@ -18,4 +18,7 @@ type RepoInterface interface {
 	FindSkillByName(ctx context.Context, name *string) (*entity.Skill, error)
 
 	AddEmployeeSkill(ctx context.Context, employeeSkill *entity.EmployeesSkill) error
+
+	// NOTE: temporary
+	DeleteEmployeeSkills(ctx context.Context, employeeID *string) error
 }
