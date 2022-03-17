@@ -44,11 +44,18 @@
             </h1>
             <h5>{{.Employee.Position}}, <span id="time"></span></h5>
             <script>
-                today = new Date();
-                hireDate = new Date({{.Employee.HireDate}});
-                _y = today.getFullYear() - hireDate.getFullYear();
-                _m = (_y * 12) + (today.getMonth() - hireDate.getMonth());
-                document.getElementById('time').innerHTML = Math.floor(_m / 12) + 'y' + (_m % 12) + 'm';
+                hd = new Date({{.Employee.HireDate}});
+                td = new Date({{.Employee.TerminationDate}});;
+                if (td.getFullYear()) {
+                    refDate = td;
+                    td = td.toISOString().slice(0, 10);
+                } else {
+                    refDate = new Date();
+                    td = 'current';
+                }
+                _y = refDate.getFullYear() - hd.getFullYear();
+                _m = (_y * 12) + (refDate.getMonth() - hd.getMonth());
+                document.getElementById('time').innerHTML = `${hd.toISOString().slice(0, 10)} - ${td} (${Math.floor(_m / 12)}y${_m % 12}m)`;
             </script>
 
             <p>{{.Employee.Presentation}}</p>

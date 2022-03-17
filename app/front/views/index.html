@@ -19,8 +19,8 @@
                 {{else}}
                     <tbody>
                         {{range .Employees}}
-                            <tr>
-                                <td><a href="/profile/{{.ID}}">{{.Name}}</a><br>{{.Position}}, <span id="{{.ID}}_time"></span></td>
+                            <tr style="opacity: {{if not .IsActive}} 0.5 {{end}};">
+                                <td><a href="/profile/{{.ID}}">{{.Name}}</a><br>{{.Position}}, <span id="{{.ID}}-time"></span></td>
                                 <td><a href="mailto:{{.Email}}">{{.Email}}</a></td>
                                 <td>
                                     {{range .EmployeesSkills}}
@@ -42,29 +42,36 @@
                                         </svg>
                                     </a>
 
-                                    <a href="#" onclick="modalEvent('/profile/{{.ID}}/delete', '{{.Name}}')" class="icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 256 256" xml:space="preserve">
-                                            <g transform="translate(128 128) scale(0.87 0.87)">
-                                                <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
-                                                    transform="translate(-144.89999999999998 -144.90000000000003) scale(3.22 3.22)">
-                                                    <path d="M 64.71 90 H 25.291 c -4.693 0 -8.584 -3.67 -8.859 -8.355 l -3.928 -67.088 c -0.048 -0.825 0.246 -1.633 0.812 -2.234 c 0.567 -0.601 1.356 -0.941 2.183 -0.941 h 59.002 c 0.826 0 1.615 0.341 2.183 0.941 c 0.566 0.601 0.86 1.409 0.813 2.234 l -3.928 67.089 C 73.294 86.33 69.403 90 64.71 90 z M 18.679 17.381 l 3.743 63.913 C 22.51 82.812 23.771 84 25.291 84 H 64.71 c 1.52 0 2.779 -1.188 2.868 -2.705 l 3.742 -63.914 H 18.679 z"/>
-                                                    <path d="M 80.696 17.381 H 9.304 c -1.657 0 -3 -1.343 -3 -3 s 1.343 -3 3 -3 h 71.393 c 1.657 0 3 1.343 3 3 S 82.354 17.381 80.696 17.381 z"/>
-                                                    <path d="M 58.729 17.381 H 31.271 c -1.657 0 -3 -1.343 -3 -3 V 8.789 C 28.271 3.943 32.214 0 37.061 0 h 15.879 c 4.847 0 8.789 3.943 8.789 8.789 v 5.592 C 61.729 16.038 60.386 17.381 58.729 17.381 z M 34.271 11.381 h 21.457 V 8.789 C 55.729 7.251 54.478 6 52.939 6 H 37.061 c -1.538 0 -2.789 1.251 -2.789 2.789 V 11.381 z"/>
-                                                    <path d="M 58.33 74.991 c -0.06 0 -0.118 -0.002 -0.179 -0.005 c -1.653 -0.097 -2.916 -1.517 -2.819 -3.171 l 2.474 -42.244 c 0.097 -1.655 1.508 -2.933 3.171 -2.819 c 1.653 0.097 2.916 1.516 2.819 3.17 l -2.474 42.245 C 61.229 73.761 59.906 74.991 58.33 74.991 z"/>
-                                                    <path d="M 31.669 74.991 c -1.577 0 -2.898 -1.23 -2.992 -2.824 l -2.473 -42.245 c -0.097 -1.654 1.165 -3.073 2.819 -3.17 c 1.646 -0.111 3.073 1.165 3.17 2.819 l 2.473 42.244 c 0.097 1.654 -1.165 3.074 -2.819 3.171 C 31.788 74.989 31.729 74.991 31.669 74.991 z"/>
-                                                    <path d="M 45 74.991 c -1.657 0 -3 -1.343 -3 -3 V 29.747 c 0 -1.657 1.343 -3 3 -3 c 1.657 0 3 1.343 3 3 v 42.244 C 48 73.648 46.657 74.991 45 74.991 z"/>
-                                                </g>
-                                            </g>
-                                        </svg>
-                                    </a>
+                                    {{if .IsActive}}
+                                        <a href="#" onclick="modalEvent('/profile/{{.ID}}/deactivate', '{{.Name}}', this)" class="icon" title="deactivate">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                                                xmlns:xlink="http://www.w3.org/1999/xlink">
+                                                <path d="M18.25,3 C19.7687831,3 21,4.23121694 21,5.75 L21,18.25 C21,19.7687831 19.7687831,21 18.25,21 L5.75,21 C4.23121694,21 3,19.7687831 3,18.25 L3,5.75 C3,4.23121694 4.23121694,3 5.75,3 L18.25,3 Z M18.25,4.5 L5.75,4.5 C5.05964406,4.5 4.5,5.05964406 4.5,5.75 L4.5,18.25 C4.5,18.9403559 5.05964406,19.5 5.75,19.5 L18.25,19.5 C18.9403559,19.5 19.5,18.9403559 19.5,18.25 L19.5,5.75 C19.5,5.05964406 18.9403559,4.5 18.25,4.5 Z M10,14.4393398 L16.4696699,7.96966991 C16.7625631,7.6767767 17.2374369,7.6767767 17.5303301,7.96966991 C17.7965966,8.23593648 17.8208027,8.65260016 17.6029482,8.94621165 L17.5303301,9.03033009 L10.5303301,16.0303301 C10.2640635,16.2965966 9.84739984,16.3208027 9.55378835,16.1029482 L9.46966991,16.0303301 L6.46966991,13.0303301 C6.1767767,12.7374369 6.1767767,12.2625631 6.46966991,11.9696699 C6.73593648,11.7034034 7.15260016,11.6791973 7.44621165,11.8970518 L7.53033009,11.9696699 L10,14.4393398 L16.4696699,7.96966991 L10,14.4393398 Z"></path>
+                                            </svg>
+                                        </a>
+                                    {{else}}
+                                            <a href="#" onclick="modalEvent('/profile/{{.ID}}/activate', '{{.Name}}', this)" class="icon" title="activate">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                                                    xmlns:xlink="http://www.w3.org/1999/xlink">
+                                                        <path d="M5.75,3 L18.25,3 C19.7687831,3 21,4.23121694 21,5.75 L21,18.25 C21,19.7687831 19.7687831,21 18.25,21 L5.75,21 C4.23121694,21 3,19.7687831 3,18.25 L3,5.75 C3,4.23121694 4.23121694,3 5.75,3 Z M5.75,4.5 C5.05964406,4.5 4.5,5.05964406 4.5,5.75 L4.5,18.25 C4.5,18.9403559 5.05964406,19.5 5.75,19.5 L18.25,19.5 C18.9403559,19.5 19.5,18.9403559 19.5,18.25 L19.5,5.75 C19.5,5.05964406 18.9403559,4.5 18.25,4.5 L5.75,4.5 Z"></path>
+                                                </svg>
+                                            </a>
+                                    {{end}}
+
                                 </td>
                             </tr>
                             <script>
                                 today = new Date();
-                                hireDate = new Date({{.HireDate}});
-                                _y = today.getFullYear() - hireDate.getFullYear();
-                                _m = (_y * 12) + (today.getMonth() - hireDate.getMonth());
-                                document.getElementById('{{.ID}}_time').innerHTML = Math.floor(_m/12)+'y' + (_m%12)+'m';
+                                hd = new Date({{.HireDate}});
+                                td = new Date({{.TerminationDate}});
+                                if (td.getFullYear()) {
+                                    refDate = td;
+                                } else {
+                                    refDate = new Date();
+                                }
+                                _y = refDate.getFullYear() - hd.getFullYear();
+                                _m = (_y * 12) + (refDate.getMonth() - hd.getMonth());
+                                document.getElementById('{{.ID}}-time').innerHTML = `${Math.floor(_m / 12)}y${_m % 12}m`;
                             </script>
                         {{end}}
                     </tbody>
@@ -74,35 +81,70 @@
     </div>
 </div>
 
-<div id="modal" class="center hidden h-center">
-    <form action="" id="modal-form" method="post">
-        <label for="password">Are you sure?</label>
-        <input type="password" placeholder="" name="password" id="modal-password" required><br>
-        <input id="modal-no" type="button" value="no" onclick="modalEventCancel()">
-        <input id="modal-yes" type="submit" value="yes">
+<div id="activate-modal" class="center hidden h-center">
+    <form action="" id="activate-modal-form" method="post">
+        <div class="container">
+            <div class="row">
+                <div class="twelve columns">
+                    <label for="activate-modal-date">Are you sure?</label>
+                    <input type="date" name="hire_date" id="activate-modal-date" required>
+                </div>
+                <div class="twelve columns">
+                    <input type="password" placeholder="" name="password" id="activate-modal-password" required>
+                </div>
+                <div class="twelve columns">
+                    <input id="activate-modal-no" type="button" value="no" onclick="modalEventCancel(this)">
+                    <input id="activate-modal-yes" type="submit" value="yes">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="deactivate-modal" class="center hidden h-center">
+    <form action="" id="deactivate-modal-form" method="post">
+        <div class="container">
+            <div class="row">
+                <div class="twelve columns">
+                    <label for="deactivate-modal-date">Are you sure?</label>
+                    <input type="date" name="termination_date" id="deactivate-modal-date" required>
+                </div>
+                <div class="twelve columns">
+                    <input type="password" placeholder="" name="password" id="deactivate-modal-password" required>
+                </div>
+                <div class="twelve columns">
+                    <input id="deactivate-modal-no" type="button" value="no" onclick="modalEventCancel(this)">
+                    <input id="deactivate-modal-yes" type="submit" value="yes">
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 
 <script>
-    function modalEventStyle(opacity, pointerEvent, modalVisibility) {
+    function modalEventStyle(opacity, pointerEvent, modalName, modalVisibility) {
         page = document.getElementById('body');
         page.style.opacity = opacity;
         page.style.pointerEvents = pointerEvent
-        modal = document.getElementById('modal');
+        modal = document.getElementById(`${modalName}-modal`);
         modal.style.visibility = modalVisibility;
     }
 
-    function modalEvent(url, employee) {
-        modalEventStyle(0.1, 'none', 'visible');
+    function modalEvent(url, employee, elem) {
+        action = elem.title;
+        modalEventStyle(0.1, 'none', action, 'visible');
         employee = employee.split(' ')[0];
-        document.getElementById('modal-form').action = url;
-        document.getElementById('modal-password').placeholder = employee + '\'s password';
+        document.getElementById(`${action}-modal-form`).action = url;
+        document.getElementById(`${action}-modal-password`).placeholder = `${employee}'s password`;
+        document.getElementById(`${action}-modal-date`).title = `${employee}'s ${action} date`;
     }
 
-    function modalEventCancel() {
-        modalEventStyle(1, 'auto', 'hidden');
-        document.getElementById('modal-form').action = "";
-        document.getElementById('modal-password').placeholder = '';
+    function modalEventCancel(elem) {
+        action = elem.id.split('-')[0]
+        modalEventStyle(1, 'auto', action, 'hidden');
+        document.getElementById(`${action}-modal-form`).action = '';
+        document.getElementById(`${action}-modal-password`).placeholder = '';
+        document.getElementById(`${action}-modal-date`).placeholder = '';
     }
 </script>
 

@@ -7,7 +7,6 @@ import (
 
 	"github.com/patricksferraz/whoare/domain/entity"
 	"github.com/patricksferraz/whoare/domain/repo"
-	"github.com/patricksferraz/whoare/utils"
 )
 
 type Service struct {
@@ -104,7 +103,7 @@ func (s *Service) UpdateEmployee(ctx context.Context, employeeID, name, position
 		return err
 	}
 
-	if err = utils.CompareHashAndPassword(e.Password, password); err != nil {
+	if err = e.CompareHashAndPassword(password); err != nil {
 		return errors.New("invalid password")
 	}
 
@@ -115,17 +114,21 @@ func (s *Service) UpdateEmployee(ctx context.Context, employeeID, name, position
 	return nil
 }
 
-func (s *Service) DeleteEmployee(ctx context.Context, employeeID, employeePassword *string) error {
+func (s *Service) DeactivateEmployee(ctx context.Context, employeeID, employeePassword *string, terminationDate time.Time) error {
 	e, err := s.Repo.FindEmployee(ctx, employeeID)
 	if err != nil {
 		return err
 	}
 
-	if err = utils.CompareHashAndPassword(e.Password, *employeePassword); err != nil {
+	if err = e.CompareHashAndPassword(*employeePassword); err != nil {
 		return errors.New("invalid password")
 	}
 
-	err = s.Repo.DeleteEmployee(ctx, e)
+	if err := e.Deactivate(terminationDate); err != nil {
+		return err
+	}
+
+	err = s.Repo.SaveEmployee(ctx, e)
 	if err != nil {
 		return err
 	}
@@ -150,6 +153,28 @@ func (s *Service) AddEmployeeSkill(ctx context.Context, employeeID, skillID *str
 	}
 
 	if err = s.Repo.AddEmployeeSkill(ctx, es); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Service) ActivateEmployee(ctx context.Context, employeeID, employeePassword *string, hireDate time.Time) error {
+	e, err := s.Repo.FindEmployee(ctx, employeeID)
+	if err != nil {
+		return err
+	}
+
+	if err = e.CompareHashAndPassword(*employeePassword); err != nil {
+		return errors.New("invalid password")
+	}
+
+	if err := e.Activate(hireDate); err != nil {
+		return err
+	}
+
+	err = s.Repo.SaveEmployee(ctx, e)
+	if err != nil {
 		return err
 	}
 

@@ -33,13 +33,15 @@ func (m *MigrateOrm) load() {
 					UpdatedAt time.Time `gorm:"column:updated_at;autoCreateTime"`
 				}
 				type Employee struct {
-					Base         `json:",inline"`
-					Name         string    `gorm:"column:name;not null"`
-					Email        string    `gorm:"column:email;not null"`
-					Password     string    `gorm:"column:password;not null"`
-					Position     string    `gorm:"column:position;not null"`
-					Presentation string    `gorm:"column:presentation"`
-					HireDate     time.Time `gorm:"column:hire_date"`
+					Base            `json:",inline"`
+					Name            string    `gorm:"column:name;not null"`
+					Email           string    `gorm:"column:email;not null"`
+					Password        string    `gorm:"column:password;not null"`
+					Position        string    `gorm:"column:position;not null"`
+					Presentation    string    `gorm:"column:presentation"`
+					HireDate        time.Time `gorm:"column:hire_date"`
+					TerminationDate time.Time `gorm:"column:termination_date"`
+					IsActive        bool      `gorm:"column:is_active;not null"`
 				}
 				type Skill struct {
 					Base `json:",inline"`

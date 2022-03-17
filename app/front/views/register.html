@@ -34,7 +34,7 @@
                 <div class="row">
                     <label for="presentation">Introduce yourself</label>
                     <textarea class="u-full-width" placeholder="Is …" name="presentation" id="presentation"
-                        maxlength="500" onkeyup="CountWords(this)" required>{{.Employee.Presentation}}</textarea>
+                        maxlength="500" onkeyup="countWords(this)" required>{{.Employee.Presentation}}</textarea>
                     <span class="u-pull-right" style="margin-top: -20px;"><span id="words">500</span> characters left.</span>
                 </div>
                 <div class="row">
@@ -43,10 +43,10 @@
                 <div class="row">
                     <!-- TODO: add sync with db skills -->
                     <div class="eleven columns">
-                        <input class="u-full-width" type="text" id="skill" value="">
+                        <input onkeydown="addSkill(event)" class="u-full-width" type="text" id="skill" value="">
                     </div>
                     <div class="one column">
-                        <a href="#" onclick="addSkill()" class="icon" style="margin: auto;">
+                        <a href="#" id="add-skill" onclick="listSkill()" class="icon" style="margin: auto;">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20"
                                 height="20" viewBox="0 0 256 256" xml:space="preserve">
                                 <g transform="translate(128 128) scale(0.87 0.87)">
@@ -78,16 +78,12 @@
                                 </div>
                                 <div class="five columns">
                                     <select class="u-full-width" name="skills.{{$i}}.xp" id="{{.Skill.Name}}-xp">
-                                        <option value="1">Junior</option>
-                                        <option value="2">Full</option>
-                                        <option value="3">Senior</option>
-                                        <option value="4">Specialist</option>
+                                        <option value="1" {{if eq .XP 1}} selected {{end}}>1-2 years</option>
+                                        <option value="2" {{if eq .XP 2}} selected {{end}}>3-4 years</option>
+                                        <option value="3" {{if eq .XP 3}} selected {{end}}>4-5 years</option>
+                                        <option value="4" {{if eq .XP 4}} selected {{end}}>5+ years</option>
                                     </select>
                                 </div>
-                                <script>
-                                    xp = { 'JUNIOR':1, 'FULL':2, 'SENIOR':3, 'SPECIALIST':4}
-                                    document.getElementById('{{.Skill.Name}}-xp').value = xp['{{.XP}}']
-                                </script>
                                 <div class="one column">
                                     <a href="#" onclick="deleteSkill('{{.Skill.Name}}')" class="icon" style="margin: auto;"><strong>X</strong></a>
                                 </div>
@@ -101,13 +97,19 @@
 </div>
 
 <script>
+    function addSkill(event) {
+        if (event.code == 'Space') {
+            document.getElementById('add-skill').click();
+        }
+    }
+
     function setAttrs(list, elem, attr) {
         list.querySelectorAll(elem).forEach(function(n, idx) {
             n.name = `skills.${idx}.${attr}`
         })
     }
 
-    function addSkill() {
+    function listSkill() {
         eSkill = document.getElementById('skill')
         skill = eSkill.value.toLowerCase();
         eSkill.value = '';
@@ -127,10 +129,10 @@
                 </div>
                 <div class="five columns">
                     <select class="u-full-width" name="" id="${skill}-xp">
-                        <option value="1">Junior</option>
-                        <option value="2">Full</option>
-                        <option value="3">Senior</option>
-                        <option value="4">Specialist</option>
+                        <option value="1">1-2 years</option>
+                        <option value="2">3-4 years</option>
+                        <option value="3">4-5 years</option>
+                        <option value="4">5+ years</option>
                     </select>
                 </div>
                 <div class="one column">

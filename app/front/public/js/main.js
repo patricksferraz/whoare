@@ -1,4 +1,4 @@
-function CountWords(s) {
-  var words = document.getElementById('words');
-  words.innerText = s.getAttribute('maxlength') - s.value.length;
+function countWords(elem) {
+  let words = document.getElementById('words');
+  words.innerText = elem.getAttribute('maxlength') - elem.value.length;
 }

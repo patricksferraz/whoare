@@ -40,7 +40,8 @@ func StartFront(orm *db.DbOrm) {
 	app.Get("/profile/:employee_id", front.Profile)
 	app.Get("/profile/:employee_id/edit", front.GetProfileEdit)
 	app.Post("/profile/:employee_id/edit", front.PostProfileEdit)
-	app.Post("/profile/:employee_id/delete", front.ProfileDelete)
+	app.Post("/profile/:employee_id/deactivate", front.ProfileDeactivate)
+	app.Post("/profile/:employee_id/activate", front.ProfileActivate)
 
 	app.Use(func(c *fiber.Ctx) error {
 		return c.Render("errors/error", fiber.Map{
