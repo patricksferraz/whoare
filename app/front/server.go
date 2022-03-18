@@ -1,10 +1,13 @@
 package front
 
 import (
+	"embed"
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/template/html"
@@ -13,6 +16,12 @@ import (
 	"github.com/patricksferraz/whoare/infra/repo"
 )
 
+//go:embed views/*
+var views embed.FS
+
+//go:embed public/*
+var public embed.FS
+
 var sessionStore = session.New()
 
 func init() {
@@ -20,14 +29,12 @@ func init() {
 }
 
 func StartFront(orm *db.DbOrm) {
-	engine := html.New("./app/front/views", ".html")
+	engine := html.NewFileSystem(http.FS(views), ".html")
 
 	app := fiber.New(fiber.Config{
 		Views:       engine,
-		ViewsLayout: "layouts/main",
+		ViewsLayout: "views/layouts/main",
 	})
-	app.Use(recover.New())
-	app.Static("/static", "./app/front/public")
 
 	repository := repo.NewRepository(orm)
 	service := service.NewService(repository)
@@ -42,6 +49,14 @@ func StartFront(orm *db.DbOrm) {
 	app.Post("/profile/:employee_id/edit", front.PostProfileEdit)
 	app.Post("/profile/:employee_id/deactivate", front.ProfileDeactivate)
 	app.Post("/profile/:employee_id/activate", front.ProfileActivate)
+
+	app.Use(recover.New())
+
+	app.Use("/static", filesystem.New(filesystem.Config{
+		Root:       http.FS(public),
+		PathPrefix: "public",
+		Browse:     false,
+	}))
 
 	app.Use(func(c *fiber.Ctx) error {
 		return c.Render("errors/error", fiber.Map{
