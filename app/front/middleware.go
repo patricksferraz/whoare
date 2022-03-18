@@ -1,21 +1,27 @@
 package front
 
 import (
+	"errors"
+	"fmt"
 	"time"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/csrf"
 	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/fiber/v2/utils"
+	"github.com/patricksferraz/whoare/domain/service"
 )
 
 type Middleware struct {
 	Session *session.Store
+	Service *service.Service
 }
 
-func NewMiddleware(session *session.Store) *Middleware {
+func NewMiddleware(session *session.Store, service *service.Service) *Middleware {
 	return &Middleware{
 		Session: session,
+		Service: service,
 	}
 }
 
@@ -33,17 +39,38 @@ func (m *Middleware) CsrfProtection() func(*fiber.Ctx) error {
 	})
 }
 
-func (m *Middleware) RequireLogin(c *fiber.Ctx) error {
-	// currSession, err := m.Session.Get(c)
-	// if err != nil {
-	// 	return err
-	// }
-	// user := currSession.Get("User")
-	// defer currSession.Save()
+func (m *Middleware) RequirePassword(c *fiber.Ctx) error {
+	var req PasswordBody
 
-	// if user == nil {
-	// 	return c.Redirect("/login")
-	// }
+	employeeID := c.Params("employee_id")
+	if !govalidator.IsUUIDv4(employeeID) {
+		return c.Render("views/errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
+			"Error":  "employee_id is not a valid uuid"},
+		)
+	}
+
+	if err := c.BodyParser(&req); err != nil {
+		return c.Render("views/errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusInternalServerError, fiber.ErrInternalServerError),
+			"Error":  err.Error()},
+		)
+	}
+
+	e, err := m.Service.FindEmployee(c.Context(), &employeeID)
+	if err != nil {
+		return c.Render("views/errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusInternalServerError, fiber.ErrInternalServerError),
+			"Error":  err.Error()},
+		)
+	}
+
+	if err := e.CompareHashAndPassword(req.Password); err != nil {
+		return c.Render("views/errors/error", fiber.Map{
+			"Status": fmt.Sprintf("%d - %s", fiber.StatusInternalServerError, fiber.ErrInternalServerError),
+			"Error":  errors.New("invalid password")},
+		)
+	}
 
 	return c.Next()
 }

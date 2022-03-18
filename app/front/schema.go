@@ -21,7 +21,6 @@ type Skill struct {
 
 type DeactivateRequest struct {
 	TaminationDate string `json:"termination_date" xml:"termination_date" form:"termination_date"`
-	Password       string `json:"password" xml:"password" form:"password"`
 }
 
 type SearchRequest struct {
@@ -30,5 +29,8 @@ type SearchRequest struct {
 
 type ActivateRequest struct {
 	HireDate string `json:"hire_date" xml:"hire_date" form:"hire_date"`
+}
+
+type PasswordBody struct {
 	Password string `json:"password" xml:"password" form:"password"`
 }

@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/patricksferraz/whoare/domain/entity"
@@ -77,7 +76,7 @@ func (s *Service) FindSkill(ctx context.Context, skillID *string) (*entity.Skill
 	return e, nil
 }
 
-func (s *Service) UpdateEmployee(ctx context.Context, employeeID, name, position, email, password, presentation string, hireDate time.Time) error {
+func (s *Service) UpdateEmployee(ctx context.Context, employeeID, name, position, email, presentation string, hireDate time.Time) error {
 	e, err := s.Repo.FindEmployee(ctx, &employeeID)
 	if err != nil {
 		return err
@@ -103,10 +102,6 @@ func (s *Service) UpdateEmployee(ctx context.Context, employeeID, name, position
 		return err
 	}
 
-	if err = e.CompareHashAndPassword(password); err != nil {
-		return errors.New("invalid password")
-	}
-
 	if err = s.Repo.SaveEmployee(ctx, e); err != nil {
 		return err
 	}
@@ -114,14 +109,10 @@ func (s *Service) UpdateEmployee(ctx context.Context, employeeID, name, position
 	return nil
 }
 
-func (s *Service) DeactivateEmployee(ctx context.Context, employeeID, employeePassword *string, terminationDate time.Time) error {
+func (s *Service) DeactivateEmployee(ctx context.Context, employeeID *string, terminationDate time.Time) error {
 	e, err := s.Repo.FindEmployee(ctx, employeeID)
 	if err != nil {
 		return err
-	}
-
-	if err = e.CompareHashAndPassword(*employeePassword); err != nil {
-		return errors.New("invalid password")
 	}
 
 	if err := e.Deactivate(terminationDate); err != nil {
@@ -159,14 +150,10 @@ func (s *Service) AddEmployeeSkill(ctx context.Context, employeeID, skillID, not
 	return nil
 }
 
-func (s *Service) ActivateEmployee(ctx context.Context, employeeID, employeePassword *string, hireDate time.Time) error {
+func (s *Service) ActivateEmployee(ctx context.Context, employeeID *string, hireDate time.Time) error {
 	e, err := s.Repo.FindEmployee(ctx, employeeID)
 	if err != nil {
 		return err
-	}
-
-	if err = e.CompareHashAndPassword(*employeePassword); err != nil {
-		return errors.New("invalid password")
 	}
 
 	if err := e.Activate(hireDate); err != nil {

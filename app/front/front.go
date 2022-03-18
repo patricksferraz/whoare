@@ -165,7 +165,7 @@ func (a *Front) PostProfileEdit(c *fiber.Ctx) error {
 		)
 	}
 
-	err = a.Service.UpdateEmployee(c.Context(), employeeID, req.Name, req.Position, req.Email, req.Password, req.Presentation, hireDate)
+	err = a.Service.UpdateEmployee(c.Context(), employeeID, req.Name, req.Position, req.Email, req.Presentation, hireDate)
 	if err != nil {
 		return c.Render("views/errors/error", fiber.Map{
 			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
@@ -227,7 +227,7 @@ func (a *Front) ProfileDeactivate(c *fiber.Ctx) error {
 		)
 	}
 
-	err = a.Service.DeactivateEmployee(c.Context(), &employeeID, &req.Password, terminationDate)
+	err = a.Service.DeactivateEmployee(c.Context(), &employeeID, terminationDate)
 	if err != nil {
 		return c.Render("views/errors/error", fiber.Map{
 			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
@@ -264,7 +264,7 @@ func (a *Front) ProfileActivate(c *fiber.Ctx) error {
 		)
 	}
 
-	err = a.Service.ActivateEmployee(c.Context(), &employeeID, &req.Password, hireDate)
+	err = a.Service.ActivateEmployee(c.Context(), &employeeID, hireDate)
 	if err != nil {
 		return c.Render("views/errors/error", fiber.Map{
 			"Status": fmt.Sprintf("%d - %s", fiber.StatusBadRequest, fiber.ErrBadRequest),
