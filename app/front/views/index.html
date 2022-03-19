@@ -93,6 +93,7 @@
                     <input type="password" placeholder="" name="password" id="activate-modal-password" required>
                 </div>
                 <div class="twelve columns">
+                    <input type="hidden" name="_csrf" value="{{.csrfToken}}">
                     <input id="activate-modal-no" type="button" value="no" onclick="modalEventCancel(this)">
                     <input id="activate-modal-yes" type="submit" value="yes">
                 </div>
@@ -113,6 +114,7 @@
                     <input type="password" placeholder="" name="password" id="deactivate-modal-password" required>
                 </div>
                 <div class="twelve columns">
+                    <input type="hidden" name="_csrf" value="{{.csrfToken}}">
                     <input id="deactivate-modal-no" type="button" value="no" onclick="modalEventCancel(this)">
                     <input id="deactivate-modal-yes" type="submit" value="yes">
                 </div>

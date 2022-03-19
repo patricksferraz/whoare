@@ -14,22 +14,22 @@ import (
 )
 
 type Middleware struct {
-	Session *session.Store
-	Service *service.Service
+	Session        *session.Store
+	Service        *service.Service
+	CsrfProtection func(*fiber.Ctx) error
 }
 
 func NewMiddleware(session *session.Store, service *service.Service) *Middleware {
-	return &Middleware{
+	m := &Middleware{
 		Session: session,
 		Service: service,
 	}
+	m.csrfProtection()
+	return m
 }
 
-func (m *Middleware) CsrfProtection() func(*fiber.Ctx) error {
-	return csrf.New(csrf.Config{
-		// Next: func(c *fiber.Ctx) bool {
-		// 	return false
-		// },
+func (m *Middleware) csrfProtection() {
+	m.CsrfProtection = csrf.New(csrf.Config{
 		KeyLookup:      "form:_csrf",
 		CookieName:     "csrf_",
 		CookieSameSite: "Strict",
