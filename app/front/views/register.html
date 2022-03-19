@@ -63,6 +63,7 @@
                     <label for="name">Set your password</label>
                     <input class="u-full-width" type="password" placeholder="Your name" name="password" id="password" required>
                 </div>
+                <input type="hidden" name="_csrf" value="{{.csrfToken}}">
                 <input class="u-pull-right" type="submit" value="submit">
             </div>
             <div class="one-half column">

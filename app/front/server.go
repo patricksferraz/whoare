@@ -41,14 +41,14 @@ func StartFront(orm *db.DbOrm) {
 	front := NewFront(service, sessionStore)
 	middleware := NewMiddleware(sessionStore, service)
 
-	app.Get("/", front.Index)
-	app.Get("/register", front.GetRegister)
-	app.Post("/register", front.PostRegister)
-	app.Get("/profile/:employee_id", front.Profile)
-	app.Get("/profile/:employee_id/edit", front.GetProfileEdit)
-	app.Post("/profile/:employee_id/edit", middleware.RequirePassword, front.PostProfileEdit)
-	app.Post("/profile/:employee_id/deactivate", middleware.RequirePassword, front.ProfileDeactivate)
-	app.Post("/profile/:employee_id/activate", middleware.RequirePassword, front.ProfileActivate)
+	app.Get("/", middleware.CsrfProtection, front.Index)
+	app.Get("/register", middleware.CsrfProtection, front.GetRegister)
+	app.Post("/register", middleware.CsrfProtection, front.PostRegister)
+	app.Get("/profile/:employee_id", middleware.CsrfProtection, front.Profile)
+	app.Get("/profile/:employee_id/edit", middleware.CsrfProtection, front.GetProfileEdit)
+	app.Post("/profile/:employee_id/edit", middleware.CsrfProtection, middleware.RequirePassword, front.PostProfileEdit)
+	app.Post("/profile/:employee_id/deactivate", middleware.CsrfProtection, middleware.RequirePassword, front.ProfileDeactivate)
+	app.Post("/profile/:employee_id/activate", middleware.CsrfProtection, middleware.RequirePassword, front.ProfileActivate)
 
 	app.Use(recover.New())
 

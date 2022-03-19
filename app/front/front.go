@@ -44,11 +44,14 @@ func (a *Front) Index(c *fiber.Ctx) error {
 	return c.Render("views/index", fiber.Map{
 		"Q":         req.Q,
 		"Employees": e,
+		"csrfToken": c.Locals("token"),
 	})
 }
 
 func (a *Front) GetRegister(c *fiber.Ctx) error {
-	return c.Render("views/register", fiber.Map{})
+	return c.Render("views/register", fiber.Map{
+		"csrfToken": c.Locals("token"),
+	})
 }
 
 func (a *Front) PostRegister(c *fiber.Ctx) error {
@@ -116,7 +119,10 @@ func (a *Front) Profile(c *fiber.Ctx) error {
 		)
 	}
 
-	return c.Render("views/profile", fiber.Map{"Employee": employee})
+	return c.Render("views/profile", fiber.Map{
+		"Employee":  employee,
+		"csrfToken": c.Locals("token"),
+	})
 }
 
 func (a *Front) GetProfileEdit(c *fiber.Ctx) error {
@@ -136,7 +142,10 @@ func (a *Front) GetProfileEdit(c *fiber.Ctx) error {
 		)
 	}
 
-	return c.Render("views/register", fiber.Map{"Employee": employee})
+	return c.Render("views/register", fiber.Map{
+		"Employee":  employee,
+		"csrfToken": c.Locals("token"),
+	})
 }
 
 func (a *Front) PostProfileEdit(c *fiber.Ctx) error {
