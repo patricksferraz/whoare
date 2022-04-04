@@ -585,11 +585,13 @@ a.icon {
   margin: 10px;
 }
 
-a.icon > svg path {
+a.icon>svg path,
+a.icon>svg circle {
   fill: rgb(136, 136, 136);
 }
 
-a.icon > svg:hover path {
+a.icon>svg:hover path,
+a.icon>svg:hover circle {
   fill: rgb(34, 34, 34);
 }
 

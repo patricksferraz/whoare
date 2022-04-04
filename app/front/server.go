@@ -59,7 +59,7 @@ func StartFront(orm *db.DbOrm) {
 	}))
 
 	app.Use(func(c *fiber.Ctx) error {
-		return c.Render("errors/error", fiber.Map{
+		return c.Render("views/errors/error", fiber.Map{
 			"Status": fmt.Sprintf("%d - %s", fiber.StatusNotFound, fiber.ErrNotFound),
 			"Error":  c.Context().Request.URI()},
 		) // => 404 "Not Found"
